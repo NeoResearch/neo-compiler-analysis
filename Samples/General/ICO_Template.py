@@ -96,4 +96,4 @@ def deploy():
         Put(ctx, TOKEN_OWNER, TOKEN_INITIAL_AMOUNT)
         return add_to_circulation(ctx, TOKEN_INITIAL_AMOUNT)
 
-return False
+    return False
