@@ -6,6 +6,16 @@
 using namespace std;
 using namespace scannerpp;
 
+// type 1 (PUSH): PUSH00, PUSH01, ...
+// type 2 arithmetic
+// type 3 jumps (JMP...)
+// type 4....
+int opcodeCategory(string op) {
+
+
+}
+
+
 vector<string> opcodes(Scanner& scanner) {
    vector<string> vs;
    while(scanner.hasNext()) {
