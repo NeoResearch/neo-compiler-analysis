@@ -1,0 +1,74 @@
+55	PUSH5	# The number 5 is pushed onto the stack.
+c5	NEWARRAY	# 
+6b	TOALTSTACK	# Puts the input onto the top of the alt stack. Removes it from the main stack.
+51	PUSH1	# The number 1 is pushed onto the stack.
+6c	FROMALTSTACK	# Puts the input onto the top of the main stack. Removes it from the alt stack.
+76	DUP	# Duplicates the top stack item.
+6b	TOALTSTACK	# Puts the input onto the top of the alt stack. Removes it from the main stack.
+00	PUSH0	#An empty array of bytes is pushed onto the stack
+52	PUSH2	# The number 2 is pushed onto the stack.
+7a	ROLL	# The item n back in the stack is moved to the top.
+c4	SETITEM	# 
+52	PUSH2	# The number 2 is pushed onto the stack.
+6c	FROMALTSTACK	# Puts the input onto the top of the main stack. Removes it from the alt stack.
+76	DUP	# Duplicates the top stack item.
+6b	TOALTSTACK	# Puts the input onto the top of the alt stack. Removes it from the main stack.
+51	PUSH1	# The number 1 is pushed onto the stack.
+52	PUSH2	# The number 2 is pushed onto the stack.
+7a	ROLL	# The item n back in the stack is moved to the top.
+c4	SETITEM	# 
+53	PUSH3	# The number 3 is pushed onto the stack.
+6c	FROMALTSTACK	# Puts the input onto the top of the main stack. Removes it from the alt stack.
+76	DUP	# Duplicates the top stack item.
+6b	TOALTSTACK	# Puts the input onto the top of the alt stack. Removes it from the main stack.
+52	PUSH2	# The number 2 is pushed onto the stack.
+52	PUSH2	# The number 2 is pushed onto the stack.
+7a	ROLL	# The item n back in the stack is moved to the top.
+c4	SETITEM	# 
+54	PUSH4	# The number 4 is pushed onto the stack.
+6c	FROMALTSTACK	# Puts the input onto the top of the main stack. Removes it from the alt stack.
+76	DUP	# Duplicates the top stack item.
+6b	TOALTSTACK	# Puts the input onto the top of the alt stack. Removes it from the main stack.
+53	PUSH3	# The number 3 is pushed onto the stack.
+52	PUSH2	# The number 2 is pushed onto the stack.
+7a	ROLL	# The item n back in the stack is moved to the top.
+c4	SETITEM	# 
+6c	FROMALTSTACK	# Puts the input onto the top of the main stack. Removes it from the alt stack.
+76	DUP	# Duplicates the top stack item.
+6b	TOALTSTACK	# Puts the input onto the top of the alt stack. Removes it from the main stack.
+00	PUSH0	#An empty array of bytes is pushed onto the stack
+c3	PICKITEM	# 
+6c	FROMALTSTACK	# Puts the input onto the top of the main stack. Removes it from the alt stack.
+76	DUP	# Duplicates the top stack item.
+6b	TOALTSTACK	# Puts the input onto the top of the alt stack. Removes it from the main stack.
+51	PUSH1	# The number 1 is pushed onto the stack.
+c3	PICKITEM	# 
+93	ADD	# a is added to b.
+6c	FROMALTSTACK	# Puts the input onto the top of the main stack. Removes it from the alt stack.
+76	DUP	# Duplicates the top stack item.
+6b	TOALTSTACK	# Puts the input onto the top of the alt stack. Removes it from the main stack.
+52	PUSH2	# The number 2 is pushed onto the stack.
+c3	PICKITEM	# 
+6c	FROMALTSTACK	# Puts the input onto the top of the main stack. Removes it from the alt stack.
+76	DUP	# Duplicates the top stack item.
+6b	TOALTSTACK	# Puts the input onto the top of the alt stack. Removes it from the main stack.
+53	PUSH3	# The number 3 is pushed onto the stack.
+c3	PICKITEM	# 
+95	MUL	# a is multiplied by b.
+94	SUB	# b is subtracted from a.
+6c	FROMALTSTACK	# Puts the input onto the top of the main stack. Removes it from the alt stack.
+76	DUP	# Duplicates the top stack item.
+6b	TOALTSTACK	# Puts the input onto the top of the alt stack. Removes it from the main stack.
+54	PUSH4	# The number 4 is pushed onto the stack.
+52	PUSH2	# The number 2 is pushed onto the stack.
+7a	ROLL	# The item n back in the stack is moved to the top.
+c4	SETITEM	# 
+6c	FROMALTSTACK	# Puts the input onto the top of the main stack. Removes it from the alt stack.
+76	DUP	# Duplicates the top stack item.
+6b	TOALTSTACK	# Puts the input onto the top of the alt stack. Removes it from the main stack.
+54	PUSH4	# The number 4 is pushed onto the stack.
+c3	PICKITEM	# 
+61	NOP	# Does nothing.
+6c	FROMALTSTACK	# Puts the input onto the top of the main stack. Removes it from the alt stack.
+75	DROP	# Removes the top stack item.
+66	RET	# 
