@@ -1,0 +1,41 @@
+--- Arithmetic/Arithmetic2.cs.opcodes	2018-03-07 16:27:11.899821188 -0300
++++ Arithmetic/Arithmetic2.py.opcodes	2018-03-07 16:31:44.584645379 -0300
+@@ -1,33 +1,24 @@
+-52	PUSH2	# The number 2 is pushed onto the stack.
++55	PUSH5	# The number 5 is pushed onto the stack.
+ c5	NEWARRAY	# 
+ 6b	TOALTSTACK	# Puts the input onto the top of the alt stack. Removes it from the main stack.
+-6c	FROMALTSTACK	# Puts the input onto the top of the main stack. Removes it from the alt stack.
+-76	DUP	# Duplicates the top stack item.
+-6b	TOALTSTACK	# Puts the input onto the top of the alt stack. Removes it from the main stack.
++6a	DUPFROMALTSTACK	# 
+ 00	PUSH0	#An empty array of bytes is pushed onto the stack
+ 52	PUSH2	# The number 2 is pushed onto the stack.
+ 7a	ROLL	# The item n back in the stack is moved to the top.
+ c4	SETITEM	# 
+-6c	FROMALTSTACK	# Puts the input onto the top of the main stack. Removes it from the alt stack.
+-76	DUP	# Duplicates the top stack item.
+-6b	TOALTSTACK	# Puts the input onto the top of the alt stack. Removes it from the main stack.
++6a	DUPFROMALTSTACK	# 
+ 00	PUSH0	#An empty array of bytes is pushed onto the stack
+ c3	PICKITEM	# 
+ 52	PUSH2	# The number 2 is pushed onto the stack.
+ 93	ADD	# a is added to b.
+-6c	FROMALTSTACK	# Puts the input onto the top of the main stack. Removes it from the alt stack.
+-76	DUP	# Duplicates the top stack item.
+-6b	TOALTSTACK	# Puts the input onto the top of the alt stack. Removes it from the main stack.
++6a	DUPFROMALTSTACK	# 
+ 51	PUSH1	# The number 1 is pushed onto the stack.
+ 52	PUSH2	# The number 2 is pushed onto the stack.
+ 7a	ROLL	# The item n back in the stack is moved to the top.
+ c4	SETITEM	# 
+-6c	FROMALTSTACK	# Puts the input onto the top of the main stack. Removes it from the alt stack.
+-76	DUP	# Duplicates the top stack item.
+-6b	TOALTSTACK	# Puts the input onto the top of the alt stack. Removes it from the main stack.
++6a	DUPFROMALTSTACK	# 
+ 51	PUSH1	# The number 1 is pushed onto the stack.
+ c3	PICKITEM	# 
+-61	NOP	# Does nothing.
+ 6c	FROMALTSTACK	# Puts the input onto the top of the main stack. Removes it from the alt stack.
+ 75	DROP	# Removes the top stack item.
+ 66	RET	# 

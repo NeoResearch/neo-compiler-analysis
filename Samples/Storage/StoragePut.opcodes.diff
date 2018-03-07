@@ -1,0 +1,30 @@
+--- Storage/StoragePut.cs.opcodes	2018-03-07 16:56:05.469000000 -0300
++++ Storage/StoragePut.py.opcodes	2018-03-07 16:56:22.428000000 -0300
+@@ -1,15 +1,23 @@
+-00	PUSH0	#An empty array of bytes is pushed onto the stack
++54	PUSH4	# The number 4 is pushed onto the stack.
+ c5	NEWARRAY	# 
+ 6b	TOALTSTACK	# Puts the input onto the top of the alt stack. Removes it from the main stack.
+-61	NOP	# Does nothing.
+ 68	SYSCALL	# Neo.Storage.GetContext
++61	NOP	# Does nothing.
++6a	DUPFROMALTSTACK	# 
++00	PUSH0	#An empty array of bytes is pushed onto the stack
++52	PUSH2	# The number 2 is pushed onto the stack.
++7a	ROLL	# The item n back in the stack is moved to the top.
++c4	SETITEM	# 
++6a	DUPFROMALTSTACK	# 
++00	PUSH0	#An empty array of bytes is pushed onto the stack
++c3	PICKITEM	# 
+ 05	PUSHBYTES5	 # 48656c6c6f "Hello"  # 0x01-0x4B The next opcode bytes is data to be pushed onto the stack
+ 05	PUSHBYTES5	 # 576f726c64 "World"  # 0x01-0x4B The next opcode bytes is data to be pushed onto the stack
+-61	NOP	# Does nothing.
+ 52	PUSH2	# The number 2 is pushed onto the stack.
+ 72	XSWAP	# 
+ 68	SYSCALL	# Neo.Storage.Put
+ 61	NOP	# Does nothing.
++00	PUSH0	#An empty array of bytes is pushed onto the stack
+ 6c	FROMALTSTACK	# Puts the input onto the top of the main stack. Removes it from the alt stack.
+ 75	DROP	# Removes the top stack item.
+ 66	RET	# 
+\ No newline at end of file
