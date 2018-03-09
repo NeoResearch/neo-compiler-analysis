@@ -17,7 +17,7 @@ int opcodeCategory(byte op) {
 }
 
 enum OpType{
-   PUSHBYTES, PUSHDATA, x, unknown
+   PUSHBYTES, PUSHDATA, PUSHCONST, NOP, x, unknown
 };
 
 struct OpPack {
@@ -126,9 +126,12 @@ OpPack getOpcode(string opcode, Scanner& scanner) {
             opk.rest = spush;
             return opk;
         }
-/*
         else if (opcode == "4f")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tPUSHM1\t#The number -1 is pushed onto the stack.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tPUSHM1\t#The number -1 is pushed onto the stack.\n");
+            return OpPack(pvalue, OpType::PUSHCONST);
+        else if ((pvalue >= 81) && (pvalue <= 96))
+            return OpPack(pvalue, OpType::PUSHCONST);
+            /*
         else if (opcode == "51")
             $("#opcodes").text($("#opcodes").text() + opcode + "\tPUSH1\t# The number 1 is pushed onto the stack.\n");
         else if (opcode == "52")
@@ -161,6 +164,12 @@ OpPack getOpcode(string opcode, Scanner& scanner) {
             $("#opcodes").text($("#opcodes").text() + opcode + "\tPUSH15\t# The number 15 is pushed onto the stack.\n");
         else if (opcode == "60")
             $("#opcodes").text($("#opcodes").text() + opcode + "\tPUSH16\t# The number 16 is pushed onto the stack.\n");
+            */
+        else if (opcode == "61")
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tNOP\t# Does nothing.\n");
+            return OpPack(pvalue, OpType::NOP);
+
+            /*
         else if (opcode == "61")
             $("#opcodes").text($("#opcodes").text() + opcode + "\tNOP\t# Does nothing.\n");
         else if (opcode == "62") {
@@ -379,15 +388,26 @@ void study1(string filebase) {
     cout << "open: " << spython.str() << endl;
     Scanner scanFilePy(new File(spython.str()));
     vector<OpPack> vop_py = str_opcodes(scanFilePy);
-    for(unsigned i=0; i<vop_py.size(); i++)
+    int countpybytes = 0;
+    for(unsigned i=0; i<vop_py.size(); i++) {
        cout << vop_py[i] << " ";
+       countpybytes += vop_py[i].size;
+    }
     cout << endl;
+
 
     cout << "open: " << scs.str() << endl;
     Scanner scanFileCs(new File(scs.str()));
     vector<OpPack> vop_cs = str_opcodes(scanFileCs);
+    int countcsbytes = 0;
+    for(unsigned i=0; i<vop_cs.size(); i++) {
+       cout << vop_cs[i] << " ";
+       countcsbytes += vop_cs[i].size;
+    }
+    cout << endl;
 
-    cout << "RESULT1\tpy\t" << vop_py.size() << "\tcs\t" << vop_cs.size() << endl;
+    cout << "RESULT1\tpy\t" << vop_py.size() << "\tcs\t" << vop_cs.size() << "\tratio\t" << vop_cs.size()/double(vop_py.size()) << endl;
+    cout << "RESULT2\tpy\t" << countpybytes << "\tcs\t" << countcsbytes   << "\tratio\t" << countcsbytes/double(countpybytes) << endl;
 
 }
 
@@ -404,6 +424,6 @@ int main() {
       study1(path);
    }
 
-   cout << "Program finished sucessfully!" << endl; 
+   cout << "Program finished sucessfully!" << endl;
    return 0;
 }
