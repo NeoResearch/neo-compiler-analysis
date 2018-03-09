@@ -76,7 +76,8 @@ void printLineCount(vector<OpPack> vop) {
   cout << "ARRAY\t" << groupCount(vop, OpType::ARRAY) << "\t";
   cout << "STRUCT\t" << groupCount(vop, OpType::STRUCT) << "\t";
   cout << "EXCEPTION\t" << groupCount(vop, OpType::EXCEPTION) << "\t";
-  cout << "unknown\t" << groupCount(vop, OpType::unknown) << endl;
+  cout << "unknown\t" << groupCount(vop, OpType::unknown) << "\t";
+  cout << "TOTAL\t" << vop.size() << endl;
 }
 
 void printLineSumParam(vector<OpPack> vop) {
@@ -104,7 +105,12 @@ void printLineSumParam(vector<OpPack> vop) {
   cout << "ARRAY\t" << groupSumParam(vop, OpType::ARRAY) << "\t";
   cout << "STRUCT\t" << groupSumParam(vop, OpType::STRUCT) << "\t";
   cout << "EXCEPTION\t" << groupSumParam(vop, OpType::EXCEPTION) << "\t";
-  cout << "unknown\t" << groupSumParam(vop, OpType::unknown) << endl;
+  cout << "unknown\t" << groupSumParam(vop, OpType::unknown) << "\t";
+  cout << "TOTAL\t";
+  int sum = 0;
+  for(unsigned i=0; i<vop.size(); i++)
+    sum += vop[i].size;
+  cout << sum << endl;
 }
 
 int toDigit(char c) {
