@@ -17,7 +17,7 @@ int opcodeCategory(byte op) {
 }
 
 enum OpType{
-   PUSHBYTES, PUSHDATA, PUSHCONST, NOP, x, unknown
+   PUSHBYTES, PUSHDATA, PUSHCONST, NOP, JUMP, CALL, APPCALL, SYSCALL, TAILCALL, ALTSTACK, RET, XSTACK, STACK, STRING, BITS, ARITHMETIC, COMPARE, MINMAXINT, SHA, HASH, SIG, ARRAY, STRUCT, EXCEPTION, unknown
 };
 
 struct OpPack {
@@ -90,9 +90,8 @@ OpPack getOpcode(string opcode, Scanner& scanner) {
         else if (opcode == "4c") {
             //$("#opcodes").text($("#opcodes").text() + opcode + "\tPUSHDATA1\t#The next byte contains the number of bytes to be pushed onto the stack\n");
             OpPack opk(pvalue, OpType::PUSHDATA);
-            int i = 0;
             string spush = "";
-            for (i = 0; i < 1; i++) {
+            for (int i = 0; i < 1; i++) {
                 spush += scanner.nextChar();
                 spush += scanner.nextChar();
                 opk.size++;
@@ -168,16 +167,22 @@ OpPack getOpcode(string opcode, Scanner& scanner) {
         else if (opcode == "61")
             //$("#opcodes").text($("#opcodes").text() + opcode + "\tNOP\t# Does nothing.\n");
             return OpPack(pvalue, OpType::NOP);
-
-            /*
-        else if (opcode == "61")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tNOP\t# Does nothing.\n");
-        else if (opcode == "62") {
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tJMP\t# ");
-            var nparfunc = "" + hexavm[0] + hexavm[1];
-            hexavm = hexavm.substr(2, hexavm.length);
-            $("#opcodes").text($("#opcodes").text() + nparfunc + "\n");
+        else if ((opcode == "62") || (opcode == "63") || (opcode == "64")) {
+          OpPack opk(pvalue, OpType::JUMP);
+          string spush = "";
+          for (int i = 0; i < 1; i++) {
+              spush += scanner.nextChar();
+              spush += scanner.nextChar();
+              opk.size++;
+          }
+          opk.rest = spush;
+          return opk;
+          //  $("#opcodes").text($("#opcodes").text() + opcode + "\tJMP\t# ");
+          //  var nparfunc = "" + hexavm[0] + hexavm[1];
+          //  hexavm = hexavm.substr(2, hexavm.length);
+          //  $("#opcodes").text($("#opcodes").text() + nparfunc + "\n");
         }
+        /*
         else if (opcode == "63") {
             $("#opcodes").text($("#opcodes").text() + opcode + "\tJMPIF\t# ");
             var nparfunc = "" + hexavm[0] + hexavm[1];
@@ -190,180 +195,259 @@ OpPack getOpcode(string opcode, Scanner& scanner) {
             hexavm = hexavm.substr(2, hexavm.length);
             $("#opcodes").text($("#opcodes").text() + nparfunc + "\n");
         }
+        */
         else if (opcode == "65")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tCALL\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tCALL\t# \n");
+            return OpPack(pvalue, OpType::CALL);
         else if (opcode == "66")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tRET\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tRET\t# \n");
+            return OpPack(pvalue, OpType::RET);
         else if (opcode == "67")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tAPPCALL\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tAPPCALL\t# \n");
+            return OpPack(pvalue, OpType::APPCALL);
         else if (opcode == "68") {
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tSYSCALL\t# ");
-            var nparfunc = "" + hexavm[0] + hexavm[1];
-            hexavm = hexavm.substr(2, hexavm.length);
-            fvalue = parseInt(nparfunc, 16);
-            sfunc = "";
-            var i = 0;
-            for (i = 0; i < fvalue; i++) {
-                var codepush = "" + hexavm[0] + hexavm[1];
-                hexavm = hexavm.substr(2, hexavm.length);
-                var cvalue = String.fromCharCode(parseInt(codepush, 16));
-                sfunc += cvalue;
-                if (sfunc == "Neo.Storage")
-                    $("#cbx_storage")[0].checked = true;
-                $("#opcodes").text($("#opcodes").text() + cvalue);
+            OpPack opk(pvalue, OpType::SYSCALL);
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tSYSCALL\t# ");
+            //var nparfunc = "" + hexavm[0] + hexavm[1];
+            //hexavm = hexavm.substr(2, hexavm.length);
+            ///fvalue = parseInt(nparfunc, 16);
+            //sfunc = "";
+            string spush = "";
+            spush += scanner.nextChar();
+            spush += scanner.nextChar();
+            opk.size++;
+            unsigned num = toHex(spush);
+            //var i = 0;
+            for (int i = 0; i < num; i++) {
+                //var codepush = "" + hexavm[0] + hexavm[1];
+                //hexavm = hexavm.substr(2, hexavm.length);
+                //var cvalue = String.fromCharCode(parseInt(codepush, 16));
+                //sfunc += cvalue;
+                spush += scanner.nextChar();
+                spush += scanner.nextChar();
+                opk.size++;
+                //if (sfunc == "Neo.Storage")
+                //    $("#cbx_storage")[0].checked = true;
+                //$("#opcodes").text($("#opcodes").text() + cvalue);
             }
-            $("#opcodes").text($("#opcodes").text() + "\n");
+            //$("#opcodes").text($("#opcodes").text() + "\n");
+            opk.rest = spush;
+            return opk;
         }
         else if (opcode == "69")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tTAILCALL\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tTAILCALL\t# \n");
+            return OpPack(pvalue, OpType::TAILCALL);
         else if (opcode == "6a")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tDUPFROMALTSTACK\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tDUPFROMALTSTACK\t# \n");
+            return OpPack(pvalue, OpType::ALTSTACK);
         else if (opcode == "6b")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tTOALTSTACK\t# Puts the input onto the top of the alt stack. Removes it from the main stack.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tTOALTSTACK\t# Puts the input onto the top of the alt stack. Removes it from the main stack.\n");
+            return OpPack(pvalue, OpType::ALTSTACK);
         else if (opcode == "6c")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tFROMALTSTACK\t# Puts the input onto the top of the main stack. Removes it from the alt stack.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tFROMALTSTACK\t# Puts the input onto the top of the main stack. Removes it from the alt stack.\n");
+            return OpPack(pvalue, OpType::ALTSTACK);
         else if (opcode == "6d")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tXDROP\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tXDROP\t# \n");
+            return OpPack(pvalue, OpType::XSTACK);
         else if (opcode == "72")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tXSWAP\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tXSWAP\t# \n");
+            return OpPack(pvalue, OpType::XSTACK);
         else if (opcode == "73")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tXTUCK\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tXTUCK\t# \n");
+            return OpPack(pvalue, OpType::XSTACK);
         else if (opcode == "74")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tDEPTH\t# Puts the number of stack items onto the stack.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tDEPTH\t# Puts the number of stack items onto the stack.\n");
+            return OpPack(pvalue, OpType::STACK);
         else if (opcode == "75")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tDROP\t# Removes the top stack item.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tDROP\t# Removes the top stack item.\n");
+            return OpPack(pvalue, OpType::STACK);
         else if (opcode == "76")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tDUP\t# Duplicates the top stack item.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tDUP\t# Duplicates the top stack item.\n");
+            return OpPack(pvalue, OpType::STACK);
         else if (opcode == "77")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tNIP\t# Removes the second-to-top stack item.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tNIP\t# Removes the second-to-top stack item.\n");
+            return OpPack(pvalue, OpType::STACK);
         else if (opcode == "78")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tOVER\t# Copies the second-to-top stack item to the top.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tOVER\t# Copies the second-to-top stack item to the top.\n");
+            return OpPack(pvalue, OpType::STACK);
         else if (opcode == "79")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tPICK\t# The item n back in the stack is copied to the top.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tPICK\t# The item n back in the stack is copied to the top.\n");
+            return OpPack(pvalue, OpType::STACK);
         else if (opcode == "7a")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tROLL\t# The item n back in the stack is moved to the top.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tROLL\t# The item n back in the stack is moved to the top.\n");
+            return OpPack(pvalue, OpType::STACK);
         else if (opcode == "7b")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tROT\t# The top three items on the stack are rotated to the left.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tROT\t# The top three items on the stack are rotated to the left.\n");
+            return OpPack(pvalue, OpType::STACK);
         else if (opcode == "7c")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tSWAP\t# The top two items on the stack are swapped.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tSWAP\t# The top two items on the stack are swapped.\n");
+            return OpPack(pvalue, OpType::STACK);
         else if (opcode == "7d")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tTUCK\t# The item at the top of the stack is copied and inserted before the second-to-top item.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tTUCK\t# The item at the top of the stack is copied and inserted before the second-to-top item.\n");
+            return OpPack(pvalue, OpType::STACK);
         else if (opcode == "7e")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tCAT\t# Concatenates two strings.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tCAT\t# Concatenates two strings.\n");
+            return OpPack(pvalue, OpType::STRING);
         else if (opcode == "7f")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tSUBSTR\t# Returns a section of a string.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tSUBSTR\t# Returns a section of a string.\n");
+            return OpPack(pvalue, OpType::STRING);
         else if (opcode == "80")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tLEFT\t# Keeps only characters left of the specified point in a string.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tLEFT\t# Keeps only characters left of the specified point in a string.\n");
+            return OpPack(pvalue, OpType::STRING);
         else if (opcode == "81")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tRIGHT\t# Keeps only characters right of the specified point in a string.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tRIGHT\t# Keeps only characters right of the specified point in a string.\n");
+            return OpPack(pvalue, OpType::STRING);
         else if (opcode == "82")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tSIZE\t# Returns the length of the input string.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tSIZE\t# Returns the length of the input string.\n");
+            return OpPack(pvalue, OpType::STRING);
         else if (opcode == "83")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tINVERT\t# Flips all of the bits in the input.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tINVERT\t# Flips all of the bits in the input.\n");
+            return OpPack(pvalue, OpType::BITS);
         else if (opcode == "84")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tAND\t# Boolean and between each bit in the inputs.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tAND\t# Boolean and between each bit in the inputs.\n");
+            return OpPack(pvalue, OpType::BITS);
         else if (opcode == "85")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tOR\t# Boolean or between each bit in the inputs.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tOR\t# Boolean or between each bit in the inputs.\n");
+            return OpPack(pvalue, OpType::BITS);
         else if (opcode == "86")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tXOR\t# Boolean exclusive or between each bit in the inputs.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tXOR\t# Boolean exclusive or between each bit in the inputs.\n");
+            return OpPack(pvalue, OpType::BITS);
         else if (opcode == "87")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tEQUAL\t# Returns 1 if the inputs are exactly equal, 0 otherwise.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tEQUAL\t# Returns 1 if the inputs are exactly equal, 0 otherwise.\n");
+            return OpPack(pvalue, OpType::COMPARE);
         else if (opcode == "8b")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tINC\t# 1 is added to the input.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tINC\t# 1 is added to the input.\n");
+            return OpPack(pvalue, OpType::ARITHMETIC);
         else if (opcode == "8c")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tDEC\t# 1 is subtracted from the input.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tDEC\t# 1 is subtracted from the input.\n");
+            return OpPack(pvalue, OpType::ARITHMETIC);
         else if (opcode == "8d")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tSIGN\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tSIGN\t# \n");
+            return OpPack(pvalue, OpType::ARITHMETIC);
         else if (opcode == "8f")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tNEGATE\t# The sign of the input is flipped.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tNEGATE\t# The sign of the input is flipped.\n");
+            return OpPack(pvalue, OpType::ARITHMETIC);
         else if (opcode == "90")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tABS\t# The input is made positive.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tABS\t# The input is made positive.\n");
+            return OpPack(pvalue, OpType::ARITHMETIC);
         else if (opcode == "91")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tNOT\t# If the input is 0 or 1, it is flipped. Otherwise the output will be 0.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tNOT\t# If the input is 0 or 1, it is flipped. Otherwise the output will be 0.\n");
+            return OpPack(pvalue, OpType::BITS);
         else if (opcode == "92")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tNZ\t# Returns 0 if the input is 0. 1 otherwise.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tNZ\t# Returns 0 if the input is 0. 1 otherwise.\n");
+            return OpPack(pvalue, OpType::COMPARE);
         else if (opcode == "93")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tADD\t# a is added to b.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tADD\t# a is added to b.\n");
+            return OpPack(pvalue, OpType::ARITHMETIC);
         else if (opcode == "94")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tSUB\t# b is subtracted from a.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tSUB\t# b is subtracted from a.\n");
+            return OpPack(pvalue, OpType::ARITHMETIC);
         else if (opcode == "95")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tMUL\t# a is multiplied by b.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tMUL\t# a is multiplied by b.\n");
+            return OpPack(pvalue, OpType::ARITHMETIC);
         else if (opcode == "96")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tDIV\t# a is divided by b.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tDIV\t# a is divided by b.\n");
+            return OpPack(pvalue, OpType::ARITHMETIC);
         else if (opcode == "97")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tMOD\t# Returns the remainder after dividing a by b.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tMOD\t# Returns the remainder after dividing a by b.\n");
+            return OpPack(pvalue, OpType::ARITHMETIC);
         else if (opcode == "98")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tSHL\t# Shifts a left b bits, preserving sign.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tSHL\t# Shifts a left b bits, preserving sign.\n");
+            return OpPack(pvalue, OpType::BITS);
         else if (opcode == "99")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tSHR\t# Shifts a right b bits, preserving sign.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tSHR\t# Shifts a right b bits, preserving sign.\n");
+            return OpPack(pvalue, OpType::BITS);
         else if (opcode == "9a")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tBOOLAND\t# If both a and b are not 0, the output is 1. Otherwise 0.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tBOOLAND\t# If both a and b are not 0, the output is 1. Otherwise 0.\n");
+            return OpPack(pvalue, OpType::BITS);
         else if (opcode == "9b")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tBOOLOR\t# If a or b is not 0, the output is 1. Otherwise 0.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tBOOLOR\t# If a or b is not 0, the output is 1. Otherwise 0.\n");
+            return OpPack(pvalue, OpType::BITS);
         else if (opcode == "9c")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tNUMEQUAL\t# Returns 1 if the numbers are equal, 0 otherwise.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tNUMEQUAL\t# Returns 1 if the numbers are equal, 0 otherwise.\n");
+            return OpPack(pvalue, OpType::COMPARE);
         else if (opcode == "9e")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tNUMNOTEQUAL\t# Returns 1 if the numbers are not equal, 0 otherwise.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tNUMNOTEQUAL\t# Returns 1 if the numbers are not equal, 0 otherwise.\n");
+            return OpPack(pvalue, OpType::COMPARE);
         else if (opcode == "9f")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tLT\t# Returns 1 if a is less than b, 0 otherwise.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tLT\t# Returns 1 if a is less than b, 0 otherwise.\n");
+            return OpPack(pvalue, OpType::COMPARE);
         else if (opcode == "a0")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tGT\t# Returns 1 if a is greater than b, 0 otherwise.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tGT\t# Returns 1 if a is greater than b, 0 otherwise.\n");
+            return OpPack(pvalue, OpType::COMPARE);
         else if (opcode == "a1")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tLTE\t# Returns 1 if a is less than or equal to b, 0 otherwise.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tLTE\t# Returns 1 if a is less than or equal to b, 0 otherwise.\n");
+            return OpPack(pvalue, OpType::COMPARE);
         else if (opcode == "a2")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tGTE\t# Returns 1 if a is greater than or equal to b, 0 otherwise.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tGTE\t# Returns 1 if a is greater than or equal to b, 0 otherwise.\n");
+            return OpPack(pvalue, OpType::COMPARE);
         else if (opcode == "a3")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tMIN\t# Returns the smaller of a and b.\n");
-        else if (opcode == "a3")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tMIN\t# Returns the smaller of a and b.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tMIN\t# Returns the smaller of a and b.\n");
+            return OpPack(pvalue, OpType::MINMAXINT);
         else if (opcode == "a4")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tMAX\t# Returns the larger of a and b.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tMAX\t# Returns the larger of a and b.\n");
+            return OpPack(pvalue, OpType::MINMAXINT);
         else if (opcode == "a5")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tWITHIN\t# Returns 1 if x is within the specified range (left-inclusive), 0 otherwise.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tWITHIN\t# Returns 1 if x is within the specified range (left-inclusive), 0 otherwise.\n");
+            return OpPack(pvalue, OpType::MINMAXINT);
         else if (opcode == "a7")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tSHA1\t# The input is hashed using SHA-1.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tSHA1\t# The input is hashed using SHA-1.\n");
+            return OpPack(pvalue, OpType::SHA);
         else if (opcode == "a8")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tSHA256\t# The input is hashed using SHA-256.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tSHA256\t# The input is hashed using SHA-256.\n");
+            return OpPack(pvalue, OpType::SHA);
         else if (opcode == "a9")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tHASH160\t# The input is hashed using HASH160.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tHASH160\t# The input is hashed using HASH160.\n");
+            return OpPack(pvalue, OpType::HASH);
         else if (opcode == "aa")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tHASH256\t# The input is hashed using HASH256.\n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tHASH256\t# The input is hashed using HASH256.\n");
+            return OpPack(pvalue, OpType::HASH);
         else if (opcode == "ac")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tCHECKSIG\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tCHECKSIG\t# \n");
+            return OpPack(pvalue, OpType::SIG);
         else if (opcode == "ae")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tCHECKMULTISIG\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tCHECKMULTISIG\t# \n");
+            return OpPack(pvalue, OpType::SIG);
         else if (opcode == "c0")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tARRAYSIZE\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tARRAYSIZE\t# \n");
+            return OpPack(pvalue, OpType::ARRAY);
         else if (opcode == "c1")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tPACK\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tPACK\t# \n");
+            return OpPack(pvalue, OpType::ARRAY);
         else if (opcode == "c2")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tUNPACK\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tUNPACK\t# \n");
+            return OpPack(pvalue, OpType::ARRAY);
         else if (opcode == "c3")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tPICKITEM\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tPICKITEM\t# \n");
+            return OpPack(pvalue, OpType::ARRAY);
         else if (opcode == "c4")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tSETITEM\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tSETITEM\t# \n");
+            return OpPack(pvalue, OpType::ARRAY);
         else if (opcode == "c5")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tNEWARRAY\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tNEWARRAY\t# \n");
+            return OpPack(pvalue, OpType::ARRAY);
         else if (opcode == "c6")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tNEWSTRUCT\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tNEWSTRUCT\t# \n");
+            return OpPack(pvalue, OpType::STRUCT);
         else if (opcode == "c8")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tAPPEND\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tAPPEND\t# \n");
+            return OpPack(pvalue, OpType::ARRAY);
         else if (opcode == "c9")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tREVERSE\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tREVERSE\t# \n");
+            return OpPack(pvalue, OpType::ARRAY);
         else if (opcode == "ca")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tREMOVE\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tREMOVE\t# \n");
+            return OpPack(pvalue, OpType::ARRAY);
         else if (opcode == "f0")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tTHROW\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tTHROW\t# \n");
+            return OpPack(pvalue, OpType::EXCEPTION);
         else if (opcode == "f1")
-            $("#opcodes").text($("#opcodes").text() + opcode + "\tTHROWIFNOT\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\tTHROWIFNOT\t# \n");
+            return OpPack(pvalue, OpType::EXCEPTION);
         else {
-            $("#opcodes").text($("#opcodes").text() + opcode + "\t???\t# \n");
+            //$("#opcodes").text($("#opcodes").text() + opcode + "\t???\t# \n");
+            return OpPack(pvalue, OpType::unknown);
         }
-*/
-    else {
-
-        return OpPack(toHex(opcode), OpType::unknown);
-     }
 }
 
 
