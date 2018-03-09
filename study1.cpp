@@ -35,6 +35,78 @@ struct OpPack {
    }
 };
 
+int groupCount(vector<OpPack> vop, OpType type) {
+  int count = 0;
+  for(unsigned i=0; i<vop.size(); i++)
+    if(vop[i].type == type)
+      count++;
+  return count;
+}
+
+int groupSumParam(vector<OpPack> vop, OpType type) {
+  int sum = 0;
+  for(unsigned i=0; i<vop.size(); i++)
+    if(vop[i].type == type)
+      sum+=vop[i].size;
+  return sum;
+}
+
+void printLineCount(vector<OpPack> vop) {
+  cout << "PUSHBYTES\t" << groupCount(vop, OpType::PUSHBYTES) << "\t";
+  cout << "PUSHDATA\t" << groupCount(vop, OpType::PUSHDATA) << "\t";
+  cout << "PUSHCONST\t" << groupCount(vop, OpType::PUSHCONST) << "\t";
+  cout << "NOP\t" << groupCount(vop, OpType::NOP) << "\t";
+  cout << "JUMP\t" << groupCount(vop, OpType::JUMP) << "\t";
+  cout << "CALL\t" << groupCount(vop, OpType::CALL) << "\t";
+  cout << "APPCALL\t" << groupCount(vop, OpType::APPCALL) << "\t";
+  cout << "SYSCALL\t" << groupCount(vop, OpType::SYSCALL) << "\t";
+  cout << "TAILCALL\t" << groupCount(vop, OpType::TAILCALL) << "\t";
+  cout << "ALTSTACK\t" << groupCount(vop, OpType::ALTSTACK) << "\t";
+  cout << "RET\t" << groupCount(vop, OpType::RET) << "\t";
+  cout << "XSTACK\t" << groupCount(vop, OpType::XSTACK) << "\t";
+  cout << "STACK\t" << groupCount(vop, OpType::STACK) << "\t";
+  cout << "STRING\t" << groupCount(vop, OpType::STRING) << "\t";
+  cout << "BITS\t" << groupCount(vop, OpType::BITS) << "\t";
+  cout << "ARITHMETIC\t" << groupCount(vop, OpType::ARITHMETIC) << "\t";
+  cout << "COMPARE\t" << groupCount(vop, OpType::COMPARE) << "\t";
+  cout << "MINMAXINT\t" << groupCount(vop, OpType::MINMAXINT) << "\t";
+  cout << "SHA\t" << groupCount(vop, OpType::SHA) << "\t";
+  cout << "HASH\t" << groupCount(vop, OpType::HASH) << "\t";
+  cout << "SIG\t" << groupCount(vop, OpType::SIG) << "\t";
+  cout << "ARRAY\t" << groupCount(vop, OpType::ARRAY) << "\t";
+  cout << "STRUCT\t" << groupCount(vop, OpType::STRUCT) << "\t";
+  cout << "EXCEPTION\t" << groupCount(vop, OpType::EXCEPTION) << "\t";
+  cout << "unknown\t" << groupCount(vop, OpType::unknown) << endl;
+}
+
+void printLineSumParam(vector<OpPack> vop) {
+  cout << "PUSHBYTES\t" << groupSumParam(vop, OpType::PUSHBYTES) << "\t";
+  cout << "PUSHDATA\t" << groupSumParam(vop, OpType::PUSHDATA) << "\t";
+  cout << "PUSHCONST\t" << groupSumParam(vop, OpType::PUSHCONST) << "\t";
+  cout << "NOP\t" << groupSumParam(vop, OpType::NOP) << "\t";
+  cout << "JUMP\t" << groupSumParam(vop, OpType::JUMP) << "\t";
+  cout << "CALL\t" << groupSumParam(vop, OpType::CALL) << "\t";
+  cout << "APPCALL\t" << groupSumParam(vop, OpType::APPCALL) << "\t";
+  cout << "SYSCALL\t" << groupSumParam(vop, OpType::SYSCALL) << "\t";
+  cout << "TAILCALL\t" << groupSumParam(vop, OpType::TAILCALL) << "\t";
+  cout << "ALTSTACK\t" << groupSumParam(vop, OpType::ALTSTACK) << "\t";
+  cout << "RET\t" << groupSumParam(vop, OpType::RET) << "\t";
+  cout << "XSTACK\t" << groupSumParam(vop, OpType::XSTACK) << "\t";
+  cout << "STACK\t" << groupSumParam(vop, OpType::STACK) << "\t";
+  cout << "STRING\t" << groupSumParam(vop, OpType::STRING) << "\t";
+  cout << "BITS\t" << groupSumParam(vop, OpType::BITS) << "\t";
+  cout << "ARITHMETIC\t" << groupSumParam(vop, OpType::ARITHMETIC) << "\t";
+  cout << "COMPARE\t" << groupSumParam(vop, OpType::COMPARE) << "\t";
+  cout << "MINMAXINT\t" << groupSumParam(vop, OpType::MINMAXINT) << "\t";
+  cout << "SHA\t" << groupSumParam(vop, OpType::SHA) << "\t";
+  cout << "HASH\t" << groupSumParam(vop, OpType::HASH) << "\t";
+  cout << "SIG\t" << groupSumParam(vop, OpType::SIG) << "\t";
+  cout << "ARRAY\t" << groupSumParam(vop, OpType::ARRAY) << "\t";
+  cout << "STRUCT\t" << groupSumParam(vop, OpType::STRUCT) << "\t";
+  cout << "EXCEPTION\t" << groupSumParam(vop, OpType::EXCEPTION) << "\t";
+  cout << "unknown\t" << groupSumParam(vop, OpType::unknown) << endl;
+}
+
 int toDigit(char c) {
     if(c == 'a')
        return 10;
@@ -62,12 +134,12 @@ byte toHex(string opcode) {
 OpPack getOpcode(string opcode, Scanner& scanner) {
    //cout << "process: " << opcode << endl;
    unsigned pvalue = toHex(opcode);
-   cout << opcode << "["<<pvalue<<"] ";
+   //cout << opcode << "["<<pvalue<<"] ";
    if (opcode == "00")
             //$("#opcodes").text($("#opcodes").text() + opcode + "\tPUSH0\t#An empty array of bytes is pushed onto the stack\n");
         return OpPack(0, OpType::PUSHBYTES);
    else if ((pvalue >= 1) && (pvalue <= 75)) {
-            cout << "NEEDS MORE " << pvalue << " BYTES" << endl;
+            //cout << "NEEDS MORE " << pvalue << " BYTES" << endl;
 //            $("#opcodes").text($("#opcodes").text() + opcode + "\tPUSHBYTES" + pvalue + "\t # ");
             OpPack opk(pvalue, OpType::PUSHBYTES);
             int i = 0;
@@ -474,10 +546,10 @@ void study1(string filebase) {
     vector<OpPack> vop_py = str_opcodes(scanFilePy);
     int countpybytes = 0;
     for(unsigned i=0; i<vop_py.size(); i++) {
-       cout << vop_py[i] << " ";
+       //cout << vop_py[i] << " ";
        countpybytes += vop_py[i].size;
     }
-    cout << endl;
+    //cout << endl;
 
 
     cout << "open: " << scs.str() << endl;
@@ -485,20 +557,29 @@ void study1(string filebase) {
     vector<OpPack> vop_cs = str_opcodes(scanFileCs);
     int countcsbytes = 0;
     for(unsigned i=0; i<vop_cs.size(); i++) {
-       cout << vop_cs[i] << " ";
+       //cout << vop_cs[i] << " ";
        countcsbytes += vop_cs[i].size;
     }
-    cout << endl;
+    //cout << endl;
 
-    cout << "RESULT1\tpy\t" << vop_py.size() << "\tcs\t" << vop_cs.size() << "\tratio\t" << vop_cs.size()/double(vop_py.size()) << endl;
-    cout << "RESULT2\tpy\t" << countpybytes << "\tcs\t" << countcsbytes   << "\tratio\t" << countcsbytes/double(countpybytes) << endl;
+    cout << "RESULT_COUNT\tpy\t" << vop_py.size() << "\tcs\t" << vop_cs.size() << "\tratio\t" << vop_cs.size()/double(vop_py.size()) << endl;
+    cout << "RESULT_SUMPARAMS\tpy\t" << countpybytes << "\tcs\t" << countcsbytes   << "\tratio\t" << countcsbytes/double(countpybytes) << endl;
 
+    cout << "GROUP_COUNT_PY\t";
+    printLineCount(vop_py);
+    cout << "GROUP_COUNT_CS\t";
+    printLineCount(vop_cs);
+
+    cout << "GROUP_SUMPARAM_PY\t";
+    printLineSumParam(vop_py);
+    cout << "GROUP_SUMPARAM_CS\t";
+    printLineSumParam(vop_cs);
 }
 
 
 int main() {
 
-   string filelist="filelist.txt";
+   string filelist="filelist2.txt";
 
    Scanner scanner(new File(filelist));
 
