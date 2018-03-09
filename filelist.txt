@@ -1,9 +1,1 @@
-Arithmetic/Arithmetic1
-Arithmetic/Arithmetic2
-Arithmetic/Arithmetic3
-Arithmetic/Arithmetic4
-General/ICO_Template
-Storage/StorageDelete
-Storage/StorageGet
-Storage/StoragePut
 Witness/CheckWitness1
