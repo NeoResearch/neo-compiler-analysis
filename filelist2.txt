@@ -1,8 +1,8 @@
 Witness/CheckWitness1
-Arithmetic/Arithmetic1
+Arithmetic/AddTest4
 Arithmetic/Arithmetic2
-Arithmetic/Arithmetic3
-Arithmetic/Arithmetic4
+Arithmetic/AddTest1
+Arithmetic/AddTest3
 General/ICO_Template
 Storage/StorageDelete
 Storage/StorageGet
